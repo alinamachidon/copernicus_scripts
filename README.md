@@ -27,11 +27,11 @@ To access Sentinel-2 data, you need a Copernicus Data Space Ecosystem account:
 - Register for an account and verify your email.
 - Log in and navigate to your user profile to get your **username** and **password**.
 
-### 2. Obtain your access tken
+### 2. Obtain your access token
 
 This script automatically fetches your access token using your Copernicus username and password.
 
-### 3. Store Your Credentials Locally
+### 3. Store credentials locally
 
 For security, store your Copernicus credentials in a `.env` file in the root directory of this project with the following content:
 
@@ -64,10 +64,10 @@ Query the Copernicus Data Space for available Sentinel-2 products matching your 
 
 Download, merge spectral bands, and save the output GeoTIFF files to desired folder (e.g. "data/labeled/").
 
-# Sentinel-2 Bands Order
+# Sentinel-2 bands order
 The merged Sentinel-2 image contains the following spectral bands in this exact order:
 
-## Band	Description	
+## Band	description	
 B02	Blue	
 
 B03	Green	
@@ -106,10 +106,13 @@ Cloud coverage filter is set to 30% by default but can be adjusted in the script
 ### Date (acquisition period):
 The script requires a target date as input and searches for Sentinel-2 Level 2A (S2 L2A) products available within a ±3-day window around this date. This helps to find the closest available cloud-free imagery for your area of interest.
 
-### Region of interest:
-The region provided via the GeoJSON file is used to define a bounding box. The Copernicus data search looks for products that intersect with this bounding box. This means any Sentinel-2 products partially or fully covering the specified region may be downloaded to ensure complete coverage.
+### Region and data coverage:
+The region of interest is provided via a GeoJSON file. The script extracts the bounding box that fully encloses this region and uses it to query the Copernicus data catalog. The search retrieves all Sentinel-2 products whose footprints intersect this bounding box.
+
+To ensure complete spatial coverage, the script may select multiple overlapping products that collectively cover the entire bounding box area. After downloading, these products are mosaicked into a single multi-band GeoTIFF to create a seamless image of the region.
+
 
 ### Files format
-Downloaded products are saved as SAFE.zip files in the specified directory to avoid repeated downloads.
+Downloaded products are saved as SAFE.zip files in the specified directory.
 
 Temporary files are cleaned up after merging.
