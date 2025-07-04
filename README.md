@@ -9,7 +9,7 @@ If you don’t have the environment yet, run:
 ```bash
 conda env create -f environment.yml
 conda activate sentinel_env
-
+```
 
 # Copernicus Sentinel-2 Data Downloader and Processor
 
@@ -42,15 +42,8 @@ Alternatively, you can store your token in a `.cdse_token` file or use environme
 
 ---
 
-## Installation
+## Usage
 
-Make sure you have Python 3.7+ installed.
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-Usage
 Place your input GeoJSON files in the folder data/output_geojsons/.
 
 Edit the geojson_paths and date_strings lists in main.py or the equivalent script to match your areas of interest and target dates.
@@ -60,6 +53,7 @@ Run the script:
 ```bash
 
 python main.py
+```
 
 The script will:
 
@@ -69,7 +63,7 @@ Query the Copernicus Data Space for available Sentinel-2 products matching your 
 
 Download, merge spectral bands, and save the output GeoTIFF files to desired folder (e.g. "data/labeled/").
 
-## How It Works
+## How it works
 The script fetches Sentinel-2 products filtered by cloud coverage, date, and location.
 
 Downloads selected Sentinel-2 product archives.
