@@ -11,9 +11,9 @@ conda env create -f environment.yml
 conda activate sentinel_env
 ```
 
-# Copernicus Sentinel-2 Data Downloader and Processor
+# Copernicus Sentinel-2 data download
 
-This project automates downloading and processing Sentinel-2 satellite imagery from the Copernicus Data Space Ecosystem (CDSE) using your Copernicus account credentials.
+This project automates the search, download, and processing of Sentinel-2 Level 2A satellite imagery from the Copernicus Data Space Ecosystem (CDSE). It uses your Copernicus account credentials to access the data and provides tools to obtain **cloud-filtered, mosaicked images covering your region and date of interest**.
 
 ---
 
