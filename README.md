@@ -1,92 +1,86 @@
-# Sentinel DL
+# Setup Conda Environment
 
-## Env
+A conda environment named `sentinel_env` is used to manage dependencies.
+
+## Creating the environment
+
+If you don’t have the environment yet, run:
 
 ```bash
-conda create -n sentinel_env python=3.10
+conda env create -f environment.yml
 conda activate sentinel_env
 
-pip install -r requirements
-```
 
-## SentinelHub config
+# Copernicus Sentinel-2 Data Downloader and Processor
 
-In order to download data from SentinelHub, you need to setup the API credentials used with `sentinelhub` library.
-
-Use the provided `sh_setup.py`, which saves this into `sentinelhub` library config file under `sentinel-dl` profile. For more information, refer to [configuration docs](https://sentinelhub-py.readthedocs.io/en/latest/configure.html).
-
-Use the script with the following params:
-```bash
-python sh_setup.py --id <insert ClientID here> --secret <insert ClinetSecret here>
-```
-
-This config will be later used when you use the `eolearn` functionalities to download the data.
-
-## Data downloading
-
-To download data for the entire Slovenian region, run `main.py`:
-
-```bash
-python main.py --date 29.10.2024
-```
-
-This will download Sentinel2 L1C patches with a single temporal dimension and all 13 bands for the entire country of Slovenia
-Patches will be saved as EOPatch inside `./patches/<date>`. The report of execution will be saved inside `./log`.
-
-With default resolution and patch size, there is about 900 patches, totaling in about 5GB for a single run.
+This project automates downloading and processing Sentinel-2 satellite imagery from the Copernicus Data Space Ecosystem (CDSE) using your Copernicus account credentials.
 
 ---
 
-Sentinel makes a recording every 5 days but due to overlap some regions of Slovenia make 2 recordings in 5 days. 
-To get a single best image for each patch, the code assembles a **single image** from tiles recorded in last month ending on a given `date`.
-With default settings, this is done by taking the least cloudy sample and mosaicking that into a single image.
-The `date` is also the only required argument.
+## Getting Started
 
-Use `python main.py -h` to get help on other arguments: [date, save_dir, resolution, patch_size, maxcc, mosaicking_order, num_workers].
+### 1. Create a Copernicus Account
 
-## Simple visualisation
+To access Sentinel-2 data, you need a Copernicus Data Space Ecosystem account:
 
-To visualise the downloaded data, you can use the provided `visualise.ipynb` which visualises a region around Ljubljana.
+- Visit [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)
+- Register for an account and verify your email.
+- Log in and navigate to your user profile to get your **username** and **password**.
 
-## Resolution (resolution), resolution (size) and resolution (bbox size).
-Sounds as confusing as it is...
+### 2. Obtain Your Access Token
 
-In EOlearn API, `resolution` refers to sentinel sampling resolution in meters (default 10m). 
-Size refers to resolution of patch in pixels (default 512). 
-Then bbox also contains "edge size" in meters of earth covered (default is resolution * patch_size -> 5120 x 5120 m).
+This script automatically fetches your access token using your Copernicus username and password.
 
-It's important to be careful if you are changing the defaults.
+### 3. Store Your Credentials Locally
 
-Side note (or warning): `SentinelHubInputTask` can't take simultaneous `size` and `resolution`, 
-so in order to get let's say region of 2560m with resolution of 10m we need bbox with 2560m side and pass resolution=10. 
+For security, store your Copernicus credentials in a `.env` file in the root directory of this project with the following content:
 
-The problem is if you want to have a region of 5120m with resolution of 20m and patch of 512x512pixels, 
-because this will default to 256x256 (as that is the size if you sample 5120m with spatial resolution of 20m).
+CDSE_USERNAME=your_username_here
+CDSE_PASSWORD=your_password_here
 
-Now one can try this: specify 5120m sided bbox and set size to 512px (but you can't also specify resolution). 
-This then yields 512x512 res just fine, but it doesn't say which sampling resolution it uses (probably 10). 
+Alternatively, you can store your token in a `.cdse_token` file or use environment variables — this project currently uses `.env` via the `python-dotenv` package.
 
-> This is not a problem with default options: resolution of 10m, and patch size of 512. Each patch is therefore 512x512 and covers 5120 x 5120 m.
+---
 
-## Developing
+## Installation
 
-### Format and code style
+Make sure you have Python 3.7+ installed.
 
-Use ruff formater and Google docstring format for development.
+Install dependencies:
 
-To format run:
 ```bash
-ruff format .
-```
+pip install -r requirements.txt
+Usage
+Place your input GeoJSON files in the folder data/output_geojsons/.
 
-### Docs and guides
+Edit the geojson_paths and date_strings lists in main.py or the equivalent script to match your areas of interest and target dates.
 
-Some nice guides are available here:
-[eolearn sentinelhub io](https://github.com/sentinel-hub/eo-learn/blob/master/examples/io/SentinelHubIO.ipynb).
-[eolearn landcover](https://github.com/sentinel-hub/eo-learn/blob/master/examples/land-cover-map/SI_LULC_pipeline.ipynb).
+Run the script:
 
-also useful are [eoleran docs](https://eo-learn.readthedocs.io/en/latest/) and [sentinelhub docs](https://docs.sentinel-hub.com/api/latest/).
+```bash
 
-### Experimental
+python main.py
 
-There is also some experimental code inside `experimental.ipynb`, `resolution_exp.ipynb` and `time.ipynb`.
+The script will:
+
+Read and reproject your GeoJSON polygons.
+
+Query the Copernicus Data Space for available Sentinel-2 products matching your area and date.
+
+Download, merge spectral bands, and save the output GeoTIFF files to desired folder (e.g. "data/labeled/").
+
+## How It Works
+The script fetches Sentinel-2 products filtered by cloud coverage, date, and location.
+
+Downloads selected Sentinel-2 product archives.
+
+Extracts and merges spectral bands (B02, B03, ..., B12) into multi-band GeoTIFFs.
+
+Visualizes product footprints for quality control (saved as PNG files).
+
+## Notes
+Cloud coverage filter is set to 30% by default but can be adjusted in the script.
+
+Downloaded products are saved as .zip files in the specified directory to avoid repeated downloads.
+
+Temporary files are cleaned up after merging.
