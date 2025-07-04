@@ -36,9 +36,10 @@ This script automatically fetches your access token using your Copernicus userna
 For security, store your Copernicus credentials in a `.env` file in the root directory of this project with the following content:
 
 CDSE_USERNAME=your_username_here
+
 CDSE_PASSWORD=your_password_here
 
-Alternatively, you can store your token in a `.cdse_token` file or use environment variables — this project currently uses `.env` via the `python-dotenv` package.
+Alternatively, you can store your token in a `.cdse_token` file or use environment variables, this project currently uses `.env` via the `python-dotenv` package.
 
 ---
 
@@ -63,6 +64,23 @@ Query the Copernicus Data Space for available Sentinel-2 products matching your 
 
 Download, merge spectral bands, and save the output GeoTIFF files to desired folder (e.g. "data/labeled/").
 
+# Sentinel-2 Bands Order
+The merged Sentinel-2 image contains the following spectral bands in this exact order:
+
+## Band	Description	
+B02	Blue	
+B03	Green	
+B04	Red	
+B05	Vegetation Red Edge 1	
+B06	Vegetation Red Edge 2	
+B07	Vegetation Red Edge 3	
+B08	Near Infrared (NIR)	
+B8A	Narrow Near Infrared (NIR)	
+B11	Shortwave Infrared (SWIR) 
+B12	Shortwave Infrared (SWIR) 2	
+
+The multi-band GeoTIFF produced by the script will have these bands in this order, so downstream analysis should use this ordering.
+
 ## How it works
 The script fetches Sentinel-2 products filtered by cloud coverage, date, and location.
 
@@ -70,11 +88,19 @@ Downloads selected Sentinel-2 product archives.
 
 Extracts and merges spectral bands (B02, B03, ..., B12) into multi-band GeoTIFFs.
 
-Visualizes product footprints for quality control (saved as PNG files).
 
 ## Notes
+
+### Cloud coverage
 Cloud coverage filter is set to 30% by default but can be adjusted in the script.
 
-Downloaded products are saved as .zip files in the specified directory to avoid repeated downloads.
+### Date (acquisition period):
+The script requires a target date as input and searches for Sentinel-2 Level 2A (S2 L2A) products available within a ±3-day window around this date. This helps to find the closest available cloud-free imagery for your area of interest.
+
+### Region of interest:
+The region provided via the GeoJSON file is used to define a bounding box. The Copernicus data search looks for products that intersect with this bounding box. This means any Sentinel-2 products partially or fully covering the specified region may be downloaded to ensure complete coverage.
+
+### Files format
+Downloaded products are saved as SAFE.zip files in the specified directory to avoid repeated downloads.
 
 Temporary files are cleaned up after merging.
