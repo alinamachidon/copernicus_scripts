@@ -19,7 +19,7 @@ This project automates downloading and processing Sentinel-2 satellite imagery f
 
 ## Getting Started
 
-### 1. Create a Copernicus Account
+### 1. Create a Copernicus account
 
 To access Sentinel-2 data, you need a Copernicus Data Space Ecosystem account:
 
@@ -27,7 +27,7 @@ To access Sentinel-2 data, you need a Copernicus Data Space Ecosystem account:
 - Register for an account and verify your email.
 - Log in and navigate to your user profile to get your **username** and **password**.
 
-### 2. Obtain Your Access Token
+### 2. Obtain your access tken
 
 This script automatically fetches your access token using your Copernicus username and password.
 
@@ -69,14 +69,23 @@ The merged Sentinel-2 image contains the following spectral bands in this exact 
 
 ## Band	Description	
 B02	Blue	
+
 B03	Green	
+
 B04	Red	
+
 B05	Vegetation Red Edge 1	
+
 B06	Vegetation Red Edge 2	
+
 B07	Vegetation Red Edge 3	
+
 B08	Near Infrared (NIR)	
+
 B8A	Narrow Near Infrared (NIR)	
+
 B11	Shortwave Infrared (SWIR) 
+
 B12	Shortwave Infrared (SWIR) 2	
 
 The multi-band GeoTIFF produced by the script will have these bands in this order, so downstream analysis should use this ordering.
