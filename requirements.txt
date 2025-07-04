@@ -1,6 +1,0 @@
-eo-learn
-# used for reports
-eo-learn[VISUALIZATION]
-
-# optional formatting (use for dev)
-ruff
