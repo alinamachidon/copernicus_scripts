@@ -62,7 +62,10 @@ Read and reproject your GeoJSON polygons.
 
 Query the Copernicus Data Space for available Sentinel-2 products matching your area and date.
 
-Download, merge spectral bands, and save the output GeoTIFF files to desired folder (e.g. "data/labeled/").
+Select and sort products by acquisition date proximity and cloud coverage to ensure the best quality data.
+
+Download the selected Sentinel-2 products, merge their spectral bands across tiles to create seamless mosaics, and save the final multi-band GeoTIFF files to your specified output directory (e.g., data/labeled/).
+
 
 # Sentinel-2 bands order
 The merged Sentinel-2 image contains the following spectral bands in this exact order:
